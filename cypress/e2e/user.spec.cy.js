@@ -1,15 +1,17 @@
 import userData from '../fixtures/userData.json'
+import LoginPage from '../pages/loginPage'
+import DashboardPage from '../pages/dashboardPage'
+import MenuPage from '../pages/menuPage'
+
+const loginPage = new LoginPage()
+const dashboardPage = new DashboardPage()
+const menuPage = new MenuPage()
 
 describe('Orange HRM Tests', () => {
 
   const selectorsList = {
-    usernameField: "[name='username']",
-    passwordField: "[name= 'password']",
-    loginButton: 'button',
-    sectionTitleTopBar: " .oxd-topbar-header-breadcrumb-module",
-    dashboardGrid: ".oxd-layout-context",
-    wrongCredentialAlert: "[role= 'alert']",
-    myInfoButton: '[href="/web/index.php/pim/viewMyDetails"]',
+
+
     firstNameField: "[name='firstName']",
     lastNameField: "[name='lastName']",
     genericfield: ".oxd-input--active",
@@ -21,13 +23,11 @@ describe('Orange HRM Tests', () => {
 
 
   it.only('User Info Update - Success', () => {
-    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userSuccess.username)
-    cy.get(selectorsList.passwordField).type(userData.userSuccess.password)
-    cy.get(selectorsList.loginButton).click()
-    cy.location("pathname").should("equal", '/web/index.php/dashboard/index')
-    cy.get(selectorsList.dashboardGrid)
-    cy.get(selectorsList.myInfoButton).click()
+    loginPage.accessLonginPage()
+    loginPage.loginWithAnyUser(userData.userSuccess.username, userData.userSuccess.password)
+    dashboardPage.checkDashboardPage()
+    menuPage.accessMyInfo()
+
     cy.get(selectorsList.firstNameField).type('FirstNameTest')
     cy.get(selectorsList.lastNameField).type('LastNameTest')
     cy.get(selectorsList.genericfield).eq(4).clear().type('Oid')
@@ -36,9 +36,6 @@ describe('Orange HRM Tests', () => {
     cy.get(selectorsList.genericfield).eq(6).clear().type('2025-03-10')
     cy.get(selectorsList.dateCloseButton).click()
     cy.get(selectorsList.submitButton).eq(0).click()
-
-
-
 
   })
 
